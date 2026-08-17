@@ -1,0 +1,573 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------
+   Brand palette. Retinting Tailwind's scales here recolours the whole
+   site at once: slate = warm white through to near-black ink, purple = rojo
+   de España, pink/fuchsia = gualda/ámbar, cyan = gualda pura.
+   ------------------------------------------------------------------ */
+@theme {
+  /* Light theme on a warm, faintly golden white — rojigualda. */
+  --color-slate-950: #ffffff;
+  --color-slate-900: #fbf7f0;
+  --color-slate-800: #f0e7d9;
+  --color-slate-700: #ddcfb8;
+  --color-slate-600: #a5947c;
+  --color-slate-500: #7b6b56;
+  --color-slate-400: #635342;
+  --color-slate-300: #453728;
+  --color-slate-200: #30251a;
+  --color-slate-100: #241a11;
+
+  /* Primary: rojo de España (every purple-* utility).
+     900/950 are the pale tints badges use as their fill. */
+  --color-purple-300: #e0797d;
+  --color-purple-400: #cc3b42;
+  --color-purple-500: #c01722;
+  --color-purple-600: #aa151b;
+  --color-purple-700: #7d0f14;
+  --color-purple-900: #fbeceb;
+  --color-purple-950: #fdf5f4;
+
+  --color-violet-600: #aa151b;
+
+  /* Secondary: gualda deepened to ámbar so white text still reads on it */
+  --color-pink-400: #eda600;
+  --color-pink-500: #d97706;
+  --color-pink-600: #b45309;
+
+  --color-fuchsia-400: #f5c542;
+  --color-fuchsia-500: #d97706;
+  --color-fuchsia-600: #a3510a;
+
+  /* Highlight: gualda */
+  --color-cyan-300: #fbe9b0;
+  --color-cyan-400: #e0a800;
+  --color-cyan-500: #9a7500;
+
+  /* WhatsApp green stays itself */
+  --color-emerald-300: #0b7a52;
+  --color-emerald-400: #10b981;
+  --color-emerald-500: #0b7a52;
+  --color-emerald-950: #eaf7f1;
+
+  --color-amber-400: #f1bf00;
+  --color-rose-500: #aa151b;
+  --color-rose-600: #7d0f14;
+
+  /* Pale tints for the badge / pill backgrounds */
+  --color-cyan-900: #fdf6e0;
+  --color-cyan-950: #fefaf0;
+  --color-emerald-900: #eaf7f1;
+  --color-pink-950: #fdf2e4;
+  --color-purple-800: #c01722;
+}
+
+
+@layer utilities {
+  .font-heading {
+    font-family: 'Outfit', sans-serif;
+  }
+
+  /* Hide the scrollbar on horizontal tab/pill strips */
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Brushed-chrome lettering for the big phone title */
+  .text-metal {
+    background: linear-gradient(
+      168deg,
+      #2b3350 0%,
+      #0d1428 16%,
+      #4a5578 34%,
+      #10182f 50%,
+      #5a6488 66%,
+      #131c33 82%,
+      #39425f 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 3px 10px rgba(45, 26, 12, 0.18));
+  }
+
+  /* Poster-style display face for big section titles */
+  .font-display {
+    font-family: 'Anton', 'Outfit', sans-serif;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+  }
+}
+
+/* Accent tokens used outside Tailwind utilities */
+:root {
+  --v-red: #aa151b;
+  --v-red-light: #cc3b42;
+  --v-gualda: #f1bf00;
+  --v-ink: #241a11;
+  --v-amber: #d97706;
+}
+
+/* ── Animated pack colours ────────────────────────────────────────────────
+   Registering these as <color> properties is what lets them interpolate:
+   plain custom properties (and background-image gradients built from raw
+   values) jump straight to the new colour. inherits:true so the children of a
+   pack card pick up the value mid-transition. */
+@property --pack-from {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #22d3ee;
+}
+@property --pack-to {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #0891b2;
+}
+@property --pack-ink {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #0e7490;
+}
+@property --pack-soft {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: rgba(34, 211, 238, 0.16);
+}
+
+.pack-tint {
+  transition:
+    --pack-from 700ms cubic-bezier(0.4, 0, 0.2, 1),
+    --pack-to 700ms cubic-bezier(0.4, 0, 0.2, 1),
+    --pack-ink 700ms cubic-bezier(0.4, 0, 0.2, 1),
+    --pack-soft 700ms cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 700ms ease,
+    box-shadow 700ms ease,
+    transform 300ms ease;
+}
+
+.pack-grad {
+  background-image: linear-gradient(100deg, var(--pack-from), var(--pack-to));
+}
+
+.pack-grad-text {
+  background-image: linear-gradient(100deg, var(--pack-from), var(--pack-to));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.pack-wash {
+  background-image: linear-gradient(180deg, var(--pack-soft) 0%, transparent 62%);
+}
+
+.pack-soft-bg {
+  background-color: var(--pack-soft);
+  color: var(--pack-ink);
+}
+
+.pack-ink {
+  color: var(--pack-ink);
+}
+
+/* The price re-reads on every tier / device change */
+@keyframes price-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+.price-in {
+  animation: price-in 320ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pack-tint { transition: none; }
+  .price-in { animation: none; }
+}
+
+/* ── Entrance motion ──────────────────────────────────────────────────────
+   A short rise-and-fade used to stage the hero on load. */
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+
+.rise-in {
+  animation: rise-in 620ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+/* Slow drift for the aurora behind the hero headline */
+@keyframes aurora-drift {
+  0%, 100% { transform: translate3d(-6%, 0, 0) scale(1); }
+  50% { transform: translate3d(6%, -4%, 0) scale(1.12); }
+}
+
+.aurora {
+  animation: aurora-drift 14s ease-in-out infinite;
+}
+
+/* The bottom bar's sliding indicator */
+.tab-indicator {
+  transition: transform 420ms cubic-bezier(0.34, 1.4, 0.5, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rise-in,
+  .aurora { animation: none; }
+  .tab-indicator { transition: none; }
+}
+
+/* Rojigualda hairline in the flag's real 1:2:1 bands — a Spanish cue
+   that costs no copy */
+.tricolore {
+  background-image: linear-gradient(
+    180deg,
+    #aa151b 0%,
+    #aa151b 25%,
+    #f1bf00 25%,
+    #f1bf00 75%,
+    #aa151b 75%,
+    #aa151b 100%
+  );
+}
+
+/* ── Spanish cues ─────────────────────────────────────────────────────────
+   The flag does the work no copy can: rojigualda bands on the brand mark,
+   and a slow band of light travelling along the hero ribbon. */
+
+/* Square flag mark used behind the logo glyph */
+.escudo {
+  background-image: linear-gradient(
+    180deg,
+    #aa151b 0%,
+    #aa151b 25%,
+    #f1bf00 25%,
+    #f1bf00 75%,
+    #aa151b 75%,
+    #aa151b 100%
+  );
+}
+
+/* Hero ribbon: the flag with a light sliding across it, forever */
+.ribbon-es {
+  position: relative;
+  overflow: hidden;
+  background-image: linear-gradient(
+    180deg,
+    #aa151b 0%,
+    #aa151b 25%,
+    #f1bf00 25%,
+    #f1bf00 75%,
+    #aa151b 75%,
+    #aa151b 100%
+  );
+}
+
+.ribbon-es::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.75) 45%,
+    rgba(255, 255, 255, 0.75) 55%,
+    transparent 100%
+  );
+  background-size: 220% 100%;
+  animation: ribbon-shine 4.5s linear infinite;
+}
+
+@keyframes ribbon-shine {
+  from { background-position: 160% 0; }
+  to { background-position: -60% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ribbon-es::after { animation: none; opacity: 0.25; }
+}
+
+/* A light sweeps across a pack when its price or palette changes */
+@keyframes sheen-sweep {
+  from { transform: translateX(-120%) skewX(-18deg); opacity: 0; }
+  35% { opacity: 0.85; }
+  to { transform: translateX(220%) skewX(-18deg); opacity: 0; }
+}
+
+.sheen {
+  animation: sheen-sweep 900ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sheen { animation: none; }
+}
+
+/* The same light as the packs, but on a slow repeat for the hero */
+@keyframes sheen-loop {
+  0% { transform: translateX(-140%) skewX(-18deg); opacity: 0; }
+  8% { opacity: 0.8; }
+  22% { transform: translateX(260%) skewX(-18deg); opacity: 0; }
+  100% { transform: translateX(260%) skewX(-18deg); opacity: 0; }
+}
+
+.sheen-loop {
+  animation: sheen-loop 7s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+}
+
+/* A breath on the hero stat figures, staggered so the row ripples */
+@keyframes figure-lift {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+
+.figure-lift {
+  animation: figure-lift 4.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sheen-loop,
+  .figure-lift { animation: none; }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f4f6fa;
+}
+::-webkit-scrollbar-thumb {
+  background: #cdd4e0;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #97a1b4;
+}
+
+/* Glassmorphism utility */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(45, 26, 12, 0.08);
+  box-shadow: 0 10px 30px -18px rgba(45, 26, 12, 0.35);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(45, 26, 12, 0.07);
+  box-shadow: 0 8px 24px -16px rgba(45, 26, 12, 0.32);
+}
+
+.glass-card {
+  transition: transform 250ms ease, box-shadow 250ms ease, border-color 250ms ease;
+}
+
+.glass-card:hover {
+  border-color: rgba(170, 21, 27, 0.45);
+  box-shadow: 0 18px 38px -18px rgba(170, 21, 27, 0.40);
+  transform: translateY(-2px);
+}
+
+/* Glow effects */
+.glow-purple {
+  box-shadow: 0 14px 34px -10px rgba(170, 21, 27, 0.45);
+}
+
+.glow-cyan {
+  box-shadow: 0 14px 34px -10px rgba(61, 127, 204, 0.4);
+}
+
+.glow-pink {
+  box-shadow: 0 14px 34px -10px rgba(241, 191, 0, 0.4);
+}
+
+/* Vivid sweep, the same ramp as the phone title bar */
+.text-gradient {
+  background: linear-gradient(100deg, var(--v-red) 0%, var(--v-amber) 45%, var(--v-gualda) 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: hue-slide 9s ease-in-out infinite alternate;
+}
+
+.text-gradient-purple {
+  background: linear-gradient(100deg, var(--v-red) 0%, #e0797d 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-cyan {
+  background: linear-gradient(100deg, var(--v-gualda) 0%, var(--v-amber) 55%, #8a3d06 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@keyframes hue-slide {
+  from { background-position: 0% 50%; }
+  to { background-position: 100% 50%; }
+}
+
+/* Vivid chip used over posters */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.28rem 0.7rem;
+  border-radius: 9999px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  background: rgba(8, 13, 15, 0.75);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: #e6e6e6;
+}
+
+/* Blue rim light drawn as a ring only, so glass behind it stays untinted */
+.rim-live::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: linear-gradient(
+    180deg,
+    #f1bf00 0%,
+    #aa151b 18%,
+    rgba(170, 21, 27, 0.25) 45%,
+    rgba(255, 255, 255, 0) 85%
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Solid black pill used straight over poster art */
+.chip-solid {
+  background: rgba(0, 0, 0, 0.82);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+}
+
+.chip-rating {
+  background: rgba(245, 158, 11, 0.16);
+  border-color: rgba(245, 158, 11, 0.45);
+  color: #b45309;
+}
+
+.chip-genre {
+  background: rgba(124, 58, 237, 0.14);
+  border-color: rgba(170, 21, 27, 0.35);
+  color: #5b21b6;
+}
+
+/* Animated gradient background mesh */
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-15px) rotate(3deg); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.08); }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 8s ease-in-out infinite;
+}
+
+/* Non-stop auto-scrolling marquee rows (two identical copies inside the track) */
+@keyframes marquee-left {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+@keyframes marquee-right {
+  from { transform: translate3d(-50%, 0, 0); }
+  to { transform: translate3d(0, 0, 0); }
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+
+.marquee-left {
+  animation: marquee-left var(--marquee-duration, 60s) linear infinite;
+}
+
+.marquee-right {
+  animation: marquee-right var(--marquee-duration, 60s) linear infinite;
+}
+
+/* Vertical variant - the phone layout scrolls the posters down the screen */
+@keyframes marquee-up {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(0, -50%, 0); }
+}
+
+@keyframes marquee-down {
+  from { transform: translate3d(0, -50%, 0); }
+  to { transform: translate3d(0, 0, 0); }
+}
+
+.marquee-col {
+  display: flex;
+  flex-direction: column;
+  height: max-content;
+  will-change: transform;
+}
+
+.marquee-up {
+  animation: marquee-up var(--marquee-duration, 60s) linear infinite;
+}
+
+.marquee-down {
+  animation: marquee-down var(--marquee-duration, 60s) linear infinite;
+}
+
+/* Soft fade on both edges of a marquee viewport */
+.marquee-mask {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+}
+
+/* Top edge is clipped hard so the card behind reads as a stacked deck;
+   only the incoming card at the bottom fades in. */
+.marquee-mask-y {
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 84%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 84%, transparent 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-left,
+  .marquee-right,
+  .marquee-up,
+  .marquee-down {
+    animation: none;
+  }
+}
+

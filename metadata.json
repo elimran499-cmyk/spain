@@ -1,0 +1,6 @@
+{
+  "name": "SwivTV España",
+  "description": "Plataforma IPTV 4K Ultra HD con +80.000 canales en directo, +200.000 películas y series, 99,9 % de disponibilidad anti-freeze y alta inmediata por WhatsApp.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
