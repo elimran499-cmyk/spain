@@ -1,7 +1,7 @@
 import { PosterItem, PricingPlan, FAQItem, DeviceInfo, PackageTier, DurationPack, ChannelItem } from '../types';
 
-export const WHATSAPP_NUMBER = "447832486269"; // same line as beehoster.net
-export const WHATSAPP_DISPLAY = "+44 7832 486269";
+export const WHATSAPP_NUMBER = "447414662070"; // same line as beehoster.net
+export const WHATSAPP_DISPLAY = "+44 7414 662070";
 
 export const POSTER_ITEMS: PosterItem[] = [
   // Live Sports
