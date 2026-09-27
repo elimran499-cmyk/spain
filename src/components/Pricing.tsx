@@ -262,6 +262,7 @@ export const Pricing: React.FC = () => {
                   </div>
 
                   <a
+                    data-cta="order"
                     href={orderUrl}
                     target="_blank"
                     rel="noopener noreferrer"
